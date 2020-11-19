@@ -4,10 +4,10 @@
 ; FECHA: 29/10/2015
 ; Holis solo estoy probando
 
+INCLUDE c:\Irvine\Irvine32.inc
+INCLUDELIB c:\Irvine\Irvine32.lib
 
-
-Menu: .
-;esta es una etiqueta se llama menu que sera donde mostraremos las opciones al usuario
+Menu: ;esta es una etiqueta se llama menu que sera donde mostraremos las opciones al usuario
      mov ah,0
      mov al,3h ;modo texto
      int 10h ; interrupcion de video
