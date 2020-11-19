@@ -9,9 +9,9 @@ INCLUDELIB c:\Irvine\Irvine32.lib
 
 		.listall
 
-		.data		;Directiva de Inicio de Variables. 
+		.data		;Directiva de Inicio de Variables.
 
-Msg1	byte		"DADO EN ENSAMBLADOR REBECA: ",0
+Msg1	byte		"DADO EN ENSAMBLADOR : ",0
 Msg2	byte		"Numero : ",0
 Msg3	byte		"Tirar otra Vez (Y/N)? : ",0
 
@@ -76,5 +76,7 @@ RanPro	PROC
 		RET
 		
 RanPro ENDP
+
+;***********************************************************************
 
 END
