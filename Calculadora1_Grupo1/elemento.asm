@@ -2,13 +2,14 @@
 ; IF-4000 ARQUITECTURA DE COMPUTADORES
 ; EJEMPLO: Dado de 6 Dígitos.1
 ; FECHA: 29/10/2015
+; Holis solo estoy probando
 
 INCLUDE c:\Irvine\Irvine32.inc
 INCLUDELIB c:\Irvine\Irvine32.lib
 
 		.listall
 
-		.data		;Directiva de Inicio de Variables.
+		.data		;Directiva de Inicio de Variables. 
 
 Msg1	byte		"DADO EN ENSAMBLADOR : ",0
 Msg2	byte		"Numero : ",0
