@@ -1,6 +1,6 @@
 ; UNIVERSIDAD DE COSTA RICA - SEDE GUANACASTE
 ; IF-4000 ARQUITECTURA DE COMPUTADORES
-; EJEMPLO 02: Entrada / Salida con Funciones de la Librería Irvine32
+; EJEMPLO: Dado de 6 Dígitos.
 ; FECHA: 29/10/2015
 
 INCLUDE c:\Irvine\Irvine32.inc
@@ -10,39 +10,72 @@ INCLUDELIB c:\Irvine\Irvine32.lib
 
 		.data		;Directiva de Inicio de Variables.
 
-Msg1	byte		"Digite un Numero : ",0
-Msg2	byte		"El Numero Ingresado es : ",0
-Msg3	byte		"El Cuadrado del Numero es : ",0
+Msg1	byte		"DADO EN ENSAMBLADOR : ",0
+Msg2	byte		"Numero : ",0
+Msg3	byte		"Tirar otra Vez (Y/N)? : ",0
 
-Num		sdword		0	;Número Ingresado por Usuario.
-Pot		sdword		0	;Cuadrado del Número Ingresado.
+Num		sdword		0		; Número Aleatorio.
 
 		.code
 
+;***********************************************************************
+; Función MAIN
+;***********************************************************************
+		
 main	PROC
 
-		mov		edx, OFFSET	Msg1	;Se pasa a EDX dirección de inicio de Msg1.
-		call	WriteString			;Escribe mensaje en consola.
+; Inicializa Generador Aleatorio ***************************************
 
-		call	ReadDec				;Lee un número decimal del teclado.
-		mov		Num, eax			;Pasa número leído a variable Num.
+		call	Randomize
 
-		call	Crlf				;Pasa cursor a siguiente línea.
-		mov		edx, OFFSET	Msg2	;Se pasa a EDX dirección de inicio de Msg2.
-		call	WriteString			;Escribe mansaje en consola.
-		call	WriteDec			;Escribe contenido de EAX (NUM) en consola.
+; Despliega Mensaje de Inicial *****************************************
 
-		imul	Num					;EAX = EAX*NUM = NUM*NUM.
-		mov		Pot, eax			;Envia resultado a la variable Pot.
+Inicio:	mov		edx, OFFSET Msg1	; EDX apunta a inicio de Msg1.
+		call	WriteString
+		call	Crlf
+		call	CrlF
 
-		call	Crlf				;Pasa cursor a siguiente línea.
-		mov		edx, OFFSET	Msg3	;Se pasa a EDX dirección de inicio de Msg2.
-		call	WriteString			;Escribe mansaje en consola.
-		call	WriteDec			;Escribe contenido de EAX (POT) en consola.
-		call	Crlf				;Pasa cursor a siguiente línea.
+; Proceso de Tirar el Dado *********************************************
 
-		exit
+Dado:	mov		edx, OFFSET Msg2	; Escribe Número.
+		call	WriteString
+					
+		call	RanPro				; Genera Número Aleatorio en Tema
+		mov		eax,Num
+		call	WriteDec
+		call	Crlf
+		call	Crlf
+
+		mov		edx, OFFSET Msg3	; Despliega Mensaje de Continuar.
+		call	WriteString
+
+		call	ReadChar			; Revisa si Continúa.
+		cmp		al,'y'
+		jne		Final
+		call	Clrscr
+		jmp		Inicio
+
+Final:	exit
 
 main	ENDP
 
-END		main
+;***********************************************************************
+; Cálculo del Número Aleatorio entre 1 y 6
+;***********************************************************************
+
+RanPro	PROC
+
+		mov		eax,6			; Rango Aleatorio de 0 a 5.
+		call	RandomRange
+		inc		eax				; Pasa Rango Aleatorio de 1 a 6.
+		cmp		eax,Num			; Compara si Número no igual a anterior.
+		je		RanPro
+		mov		Num,eax
+
+		RET
+		
+RanPro ENDP
+
+;***********************************************************************
+
+END
