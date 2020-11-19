@@ -7,75 +7,98 @@
 INCLUDE c:\Irvine\Irvine32.inc
 INCLUDELIB c:\Irvine\Irvine32.lib
 
-		.listall
+org 100h
+use16
+start:
+;limpiar la pantalla
+mov	ah,00h
+mov	al,03h
+int	10h
+;Mensaje de bienvenida
+mov	ah,9h
+mov	dx,msg
+int 	21h
+;esperar numeros
+Esperar:
+mov	ah,00h
+int	16h
+;echo
+mov	ah, 0eh
+int	10h
+;operar conforme se presionan las teclas
+cmp	al,27   	;salir con q
+je	SalirEsc
+cmp	al,'+'		;detectar suma
+je	Suma
+cmp	al,'-'		;detectar resta
+je	Resta
+cmp	al,'*'		;detectar multiplicacion
+je	Mult
+cmp	al,'/'		;detectar division
+je	Divi
+cmp	al,13		;operar
+je	Operar
+;ver si es numero
+mov	cl,al
+push	cx		;guardar el numero a la pila
+sub	al, 40h		;ver si es numero
+cmp	al, 0
+jge	Error
 
-		.data		;Directiva de Inicio de Variables. 
+jmp	Esperar		;esperar siguiente numero o tecla
 
-Msg1	byte		"DADO EN ENSAMBLADOR : ",0
-Msg2	byte		"Numero : ",0
-Msg3	byte		"Tirar otra Vez (Y/N)? : ",0
 
-Num		sdword		0		; Número Aleatorio.
 
-		.code
+Suma:
+;acciones para sumar cosas
+pop 	cx
+add	al,cl
+int	21h
+jmp	Esperar
 
-;***********************************************************************
-; Función MAIN
-;***********************************************************************
-		
-main	PROC
+Resta:
+;acciones para restar cosas
+pop	cx
+sub	al,cl
+jmp	 Esperar
 
-; Inicializa Generador Aleatorio ***************************************
+Mult:
+;acciones para multiplicar cosas
+pop	cx
+;mul   	al,cl 
+jmp	Esperar
 
-		call	Randomize
+Divi:
+;acciones para dividir cosas
+pop	cx
+;div	al,cl
+jmp 	Esperar
 
-; Despliega Mensaje de Inicial *****************************************
+Operar:
+;acciones para operar
+pop	cx
+mov	ah,09h
+mov	dx,opact
+int	21h
+jmp	Esperar
 
-Inicio:	mov		edx, OFFSET Msg1	; EDX apunta a inicio de Msg1.
-		call	WriteString
-		call	Crlf
-		call	CrlF
+Error:
+mov	ah,09h
+mov	dx,error
+int 	21h
+jmp	Esperar
 
-; Proceso de Tirar el Dado *********************************************
+SalirEsc:
+mov	ah,09h
+mov	dx,adios
+int 	21h
+ret
 
-Dado:	mov		edx, OFFSET Msg2	; Escribe Número.
-		call	WriteString
-					
-		call	RanPro				; Genera Número Aleatorio en Tema
-		mov		eax,Num
-		call	WriteDec
-		call	Crlf
-		call	Crlf
-
-		mov		edx, OFFSET Msg3	; Despliega Mensaje de Continuar.
-		call	WriteString
-
-		call	ReadChar			; Revisa si Continúa.
-		cmp		al,'y'
-		jne		Final
-		call	Clrscr
-		jmp		Inicio
-
-Final:	exit
-
-main	ENDP
-
-;***********************************************************************
-; Cálculo del Número Aleatorio entre 1 y 6
-;***********************************************************************
-
-RanPro	PROC
-
-		mov		eax,6			; Rango Aleatorio de 0 a 5.
-		call	RandomRange
-		inc		eax				; Pasa Rango Aleatorio de 1 a 6.
-		cmp		eax,Num			; Compara si Número no igual a anterior.
-		je		RanPro
-		mov		Num,eax
-
-		RET
-		
-RanPro ENDP
+num	db ?  
+opact	db "operacion realizada:",13,10,"$"
+msg	db "Bienvenido a la calculadora",13,10,"$"
+adios	db 13,10,"Adios :)",13,10,"$"
+error	db 13,13,"esto no es un numero",13,10,"$"
 
 ;***********************************************************************
 
